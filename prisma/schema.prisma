@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String    @id @default(cuid())
+  email      String    @unique
+  password   String?
+  username   String?   @unique
+  name       String?
+  avatarUrl  String?   @map("avatar_url")
+  role       String    @default("user")
+  isVerified Boolean   @default(false) @map("is_verified")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  lastLogin  DateTime? @map("last_login")
+  provider   String?
+  providerId String?   @map("provider_id")
+
+  refreshTokens RefreshToken[]
+  emailTokens   EmailToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+model EmailToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  type      String // "verification" or "reset_password"
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now())
+
+  @@map("email_tokens")
+}
