@@ -1,6 +1,9 @@
 import { ErrorRequestHandler } from "express";
 import z, { ZodError } from "zod";
-import { PrismaClientKnownRequestError, PrismaClientValidationError } from "../prisma/generated/prisma/runtime/client";
+import {
+	PrismaClientKnownRequestError,
+	PrismaClientValidationError,
+} from "../prisma/generated/prisma/runtime/client";
 import { sendError } from "./app";
 
 export function registerProcessHandlers() {
@@ -26,10 +29,18 @@ export function registerProcessHandlers() {
 	});
 }
 
-
-export const errorRequestHandler: ErrorRequestHandler = (err, req, res, next) => {
+export const errorRequestHandler: ErrorRequestHandler = (
+	err,
+	req,
+	res,
+	next,
+) => {
 	if (err instanceof PrismaClientKnownRequestError) {
 		const dbError = err.meta?.driverAdapterError?.cause;
+
+		if (err.code === "P2025" && err.meta?.modelName === "EmailToken") {
+			return sendError(res, ["Token not found"], 404);
+		}
 
 		if (dbError?.kind === "UniqueConstraintViolation") {
 			const fields = dbError.constraint?.fields || [];
@@ -44,7 +55,6 @@ export const errorRequestHandler: ErrorRequestHandler = (err, req, res, next) =>
 	}
 
 	if (err instanceof PrismaClientValidationError) {
-		console.log(err);
 		return sendError(res, ["Validation Error"], 409);
 	}
 
@@ -55,8 +65,7 @@ export const errorRequestHandler: ErrorRequestHandler = (err, req, res, next) =>
 		return sendError(res, errorStrings as string[], 409);
 	}
 
-
 	if (err instanceof Error) {
-		return sendError(res, ["Server error"], 500)
+		return sendError(res, ["Server error"], 500);
 	}
-}
+};

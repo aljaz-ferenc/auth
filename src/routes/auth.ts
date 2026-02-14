@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import crypto from 'crypto';
+import crypto from "crypto";
 import { addHours } from "date-fns";
 import express, { type Router } from "express";
 import { sendError } from "../app";
@@ -22,24 +22,24 @@ authRouter.post("/register", async (req, res) => {
 			name: name ?? null,
 			emailTokens: {
 				create: {
-					token: crypto.randomBytes(32).toString('hex'),
-					type: 'verification',
-					expiresAt: addHours(new Date(), 24)
-				}
-			}
+					token: crypto.randomBytes(32).toString("hex"),
+					type: "verification",
+					expiresAt: addHours(new Date(), 24),
+				},
+			},
 		},
 		include: {
-			emailTokens: true
-		}
+			emailTokens: true,
+		},
 	});
 
 	const token = user.emailTokens[0];
 
 	if (!token) {
-		return sendError(res, ['Error generating verification token'], 500)
+		return sendError(res, ["Error generating verification token"], 500);
 	}
 
-	await sendVerificationEmail(user.email, token.token)
+	await sendVerificationEmail(user.email, token.token);
 
 	res.json({
 		message:
@@ -48,13 +48,59 @@ authRouter.post("/register", async (req, res) => {
 	});
 });
 
+authRouter.get("/verify-email", async (req, res) => {
+	const { token } = req.query;
 
-// authRouter.get('/verify-email', async (req, res) => {
-// 	const { token } = req.query
+	if (!token) {
+		return sendError(res, ["Verification token missing"], 400);
+	}
+	const tokenDB = await prisma.emailToken.findFirst({
+		where: {
+			token: token.toString(),
+		},
+	});
 
-// 	if (!token) {
-// 		sendError(res, ['Verification token missing'], 400)
-// 	}
-// })
+	if (!tokenDB) {
+		return sendError(res, ["Invalid verification link"], 404);
+	}
 
+	const isExpired = new Date() > tokenDB.expiresAt;
+
+	if (isExpired) {
+		await prisma.emailToken.delete({
+			where: { id: tokenDB.id },
+		});
+		return sendError(res, ["Expired verification link"], 400);
+	}
+
+	const user = await prisma.user.findUnique({
+		where: { id: tokenDB.userId },
+	});
+
+	if (!user) {
+		return sendError(res, ["User not found"], 404);
+	}
+
+	if (user.isVerified) {
+		await prisma.emailToken.delete({
+			where: { id: tokenDB.id },
+		});
+
+		return res.status(200).json({ message: "Email already verified" });
+	}
+
+	await prisma.user.update({
+		where: { id: tokenDB.userId },
+		data: {
+			isVerified: true,
+			emailTokens: {
+				delete: { id: tokenDB.id },
+			},
+		},
+	});
+
+	return res.status(200).json({
+		message: "Email verified successfully",
+	});
+});
 export { authRouter };
