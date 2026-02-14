@@ -1,12 +1,11 @@
 {
 	"compilerOptions": {
-		"target": "ES2023",
-		"module": "ESNext",
-		"moduleResolution": "bundler",
+		"target": "ES2020",
+		"module": "commonjs",
+		"moduleResolution": "node",
 		"rootDir": "./src",
 		"outDir": "./dist",
 		"strict": true,
-		"ignoreDeprecations": "6.0",
 		"noUncheckedIndexedAccess": true,
 		"exactOptionalPropertyTypes": true,
 		"sourceMap": true,
@@ -17,5 +16,5 @@
 		"skipLibCheck": true
 	},
 	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "prisma"]
 }

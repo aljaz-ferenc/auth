@@ -1,9 +1,8 @@
 import express, { type Express } from "express";
+import { authRouter } from "./routes/auth";
 
 const app: Express = express();
-
-app.get("/", (_req, res) => {
-	res.json({ message: "Hello" });
-});
+app.use(express.json());
+app.use("/api/auth", authRouter);
 
 export default app;

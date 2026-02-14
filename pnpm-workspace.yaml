@@ -2,3 +2,6 @@ onlyBuiltDependencies:
   - '@prisma/engines'
   - esbuild
   - prisma
+
+overrides:
+  typescript: link:../../../../.local/share/pnpm/global/5/node_modules/typescript

@@ -13,6 +13,7 @@
 		"indentStyle": "tab"
 	},
 	"linter": {
+		"includes": ["!prisma"],
 		"enabled": true,
 		"rules": {
 			"recommended": true
