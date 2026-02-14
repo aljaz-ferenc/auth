@@ -6,35 +6,20 @@ import { type RegisterUserInput, registerUserSchema } from "../lib/types";
 const authRouter: Router = express.Router();
 
 authRouter.post("/register", async (req, res) => {
-	const validation = registerUserSchema.safeParse(req.body);
-
-	if (!validation.success) {
-		return res
-			.status(400)
-			.json({ message: validation.error.message, error: validation.error });
-	}
-
-	const { name, email, password, username }: RegisterUserInput = req.body;
-
+	const validated = registerUserSchema.parse(req.body);
+	const { name, email, password, username }: RegisterUserInput = validated;
 	const hash = await bcrypt.hash(password, 10);
 
-	try {
-		await prisma.user.create({
-			data: {
-				email,
-				password: hash,
-				username: username ?? null,
-				name: name ?? null,
-			},
-		});
+	await prisma.user.create({
+		data: {
+			email,
+			password: hash,
+			username: username ?? null,
+			name: name ?? null,
+		},
+	});
 
-		res.json(validation.data);
-	} catch (error) {
-		console.log(error);
-		res
-			.status(400)
-			.json({ message: "Something went wrong registering user", error });
-	}
+	res.json({ message: 'Registration successful! Please check your email to verify your account.', user: { email: validated.email } });
 });
 
 // authRouter.post('/login', async (req, res) => {
