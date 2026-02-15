@@ -10,6 +10,11 @@ jest.mock("../email", () => ({
 
 const testEmail = "32raedfa2e@faw3rqeawrdsfszdf.com";
 
+const validUserData = {
+	email: testEmail,
+	password: "aw3rdsfsdf4543",
+} satisfies RegisterUserInput;
+
 describe("Email Verification", () => {
 	beforeEach(() => jest.clearAllMocks());
 
@@ -19,11 +24,6 @@ describe("Email Verification", () => {
 	});
 
 	it("should call sendVerificationEmail after successfull registration", async () => {
-		const validUserData = {
-			email: testEmail,
-			password: "aw3rdsfsdf4543",
-		} satisfies RegisterUserInput;
-
 		const response = await request(app)
 			.post("/api/auth/register")
 			.send(validUserData);
@@ -71,5 +71,56 @@ describe("Email Verification", () => {
 			where: { email: testEmail },
 		});
 		expect(verifiedUser?.isVerified).toBe(true);
+	});
+});
+
+describe("Resend Verification", () => {
+	beforeEach(() => jest.clearAllMocks());
+
+	afterEach(async () => {
+		await prisma.user.deleteMany({ where: { email: testEmail } });
+		await prisma.$disconnect();
+	});
+
+	it("should return 400 if email is invalid", async () => {
+		const response = await request(app)
+			.post("/api/auth/resend-verification")
+			.send({ email: "invalid@email" });
+
+		expect(response.status).toBe(400);
+	});
+
+	it("should return 200 if the user is not found to prevent email enumeration", async () => {
+		const response = await request(app)
+			.post("/api/auth/resend-verification")
+			.send({ email: testEmail });
+
+		expect(response.status).toBe(200);
+	});
+
+	it("should return 400 if user is already verified", async () => {
+		await request(app).post("/api/auth/register").send(validUserData);
+
+		const user = await prisma.user.findUnique({
+			where: { email: testEmail },
+			include: { emailTokens: true },
+		});
+
+		await request(app)
+			.get("/api/auth/verify-email")
+			.query({ token: user?.emailTokens[0]?.token });
+
+		const verifiedUser = await prisma.user.findUnique({
+			where: { email: testEmail },
+		});
+
+		expect(verifiedUser).toBeDefined();
+		expect(verifiedUser?.isVerified).toBe(true);
+
+		const response = await request(app)
+			.post("/api/auth/resend-verification")
+			.send({ email: verifiedUser?.email });
+
+		expect(response.status).toBe(400);
 	});
 });
