@@ -40,12 +40,17 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
+enum TokenType {
+  VERIFICATION
+  RESET_PASSWORD
+}
+
 model EmailToken {
   id        String   @id @default(cuid())
   token     String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String   @map("user_id")
-  type      String // "verification" or "reset_password"
+  type      TokenType 
   expiresAt DateTime @map("expires_at")
   createdAt DateTime @default(now())
 

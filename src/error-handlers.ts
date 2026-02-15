@@ -66,6 +66,7 @@ export const errorRequestHandler: ErrorRequestHandler = (
 	}
 
 	if (err instanceof Error) {
+		console.log(err);
 		return sendError(res, ["Server error"], 500);
 	}
 };
