@@ -2,7 +2,7 @@ import cors from "cors";
 import express, { type Express, Response } from "express";
 import helmet from "helmet";
 import { errorRequestHandler } from "./error-handlers";
-import { authRouter } from "./routes/auth";
+import { authRouter } from "./routes/auth.route";
 
 const ORIGIN = process.env.ORIGIN as string;
 
