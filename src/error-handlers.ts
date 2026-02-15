@@ -31,12 +31,12 @@ export function registerProcessHandlers() {
 
 export const errorRequestHandler: ErrorRequestHandler = (
 	err,
-	req,
+	_req,
 	res,
-	next,
+	_next,
 ) => {
 	if (err instanceof PrismaClientKnownRequestError) {
-		const dbError = err.meta?.driverAdapterError?.cause;
+		const dbError = (err.meta?.driverAdapterError as any).cause;
 
 		if (err.code === "P2025" && err.meta?.modelName === "EmailToken") {
 			return sendError(res, ["Token not found"], 404);
