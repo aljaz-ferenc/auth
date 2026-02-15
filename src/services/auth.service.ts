@@ -3,12 +3,10 @@ import crypto from "crypto";
 import { addDays, addHours } from "date-fns";
 import jwt from "jsonwebtoken";
 import { EmailToken, User } from "../../prisma/generated/prisma";
+import { env } from "../config/env";
 import { prisma } from "../lib/prisma";
 import { RegisterUserInput } from "../lib/types";
 import { generateToken, hashPassword } from "../lib/utils";
-
-const JWT_SECRET = process.env.JWT_SECRET as string;
-if (!JWT_SECRET) throw new Error("Missing JWT_SECRET in .env");
 
 export class AuthService {
 	async register(data: RegisterUserInput) {
@@ -67,7 +65,7 @@ export class AuthService {
 	}
 
 	generateAccessToken(userId: User["id"], email: User["email"]) {
-		return jwt.sign({ userId: userId, email: email }, JWT_SECRET, {
+		return jwt.sign({ userId: userId, email: email }, env.JWT_SECRET, {
 			expiresIn: "15m",
 		});
 	}

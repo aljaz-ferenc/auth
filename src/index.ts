@@ -1,11 +1,13 @@
-import dotenv from "dotenv";
 import app from "./app";
+import { env, validateEnv } from "./config/env";
+
+validateEnv();
+
 import { registerProcessHandlers } from "./error-handlers";
 
-dotenv.config();
 registerProcessHandlers();
 
-const PORT = process.env.PORT ?? 4000;
+const PORT = env.PORT ?? 4000;
 
 async function startServer() {
 	try {

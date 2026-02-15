@@ -6,9 +6,6 @@ import { AuthService } from "../../services/auth.service";
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET as string;
-if (!JWT_SECRET) throw new Error("Missing JWT_SECRET in .env");
-
 const authService = new AuthService();
 
 export const loginHandler: RequestHandler = async (req, res) => {
