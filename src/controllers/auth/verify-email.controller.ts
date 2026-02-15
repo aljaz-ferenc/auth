@@ -5,7 +5,7 @@ import { AuthService } from "../../services/auth.service";
 
 const authService = new AuthService();
 
-export const verifyEmailHandler: RequestHandler = async (req, res) => {
+export const verifyEmailController: RequestHandler = async (req, res) => {
 	const { token } = verifyEmailBodySchema.parse(req.query);
 	const tokenDB = await authService.getEmailToken(token.toString());
 

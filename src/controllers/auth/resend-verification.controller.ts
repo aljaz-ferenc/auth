@@ -7,7 +7,10 @@ import { AuthService } from "../../services/auth.service";
 
 const authService = new AuthService();
 
-export const resendVerificationHandler: RequestHandler = async (req, res) => {
+export const resendVerificationController: RequestHandler = async (
+	req,
+	res,
+) => {
 	const validated = z.email().safeParse(req.body.email);
 
 	if (!validated.success) {

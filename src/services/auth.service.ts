@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { addDays, addHours } from "date-fns";
 import jwt from "jsonwebtoken";
-import { EmailToken, User } from "../../prisma/generated/prisma";
+import { EmailToken, RefreshToken, User } from "../../prisma/generated/prisma";
 import { env } from "../config/env";
 import { prisma } from "../lib/prisma";
 import { RegisterUserInput } from "../lib/types";
@@ -30,6 +30,10 @@ export class AuthService {
 				emailTokens: true,
 			},
 		});
+	}
+
+	async deleteRefreshToken(token: RefreshToken["token"]) {
+		return prisma.refreshToken.delete({ where: { token } });
 	}
 
 	async getEmailToken(emailToken: string) {

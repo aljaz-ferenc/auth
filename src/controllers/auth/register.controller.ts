@@ -7,7 +7,7 @@ import { EmailService } from "../../services/email.service";
 const authService = new AuthService();
 const emailService = new EmailService();
 
-export const registerHandler: RequestHandler = async (req, res) => {
+export const registerController: RequestHandler = async (req, res) => {
 	const registerData = registerUserSchema.parse(req.body);
 	const user = await authService.register(registerData);
 	const token = user.emailTokens[0];

@@ -1,14 +1,16 @@
 import express, { type Router } from "express";
-import { loginHandler } from "../controllers/auth/login.controller";
-import { registerHandler } from "../controllers/auth/register.controller";
-import { resendVerificationHandler } from "../controllers/auth/resend-verification.controller";
-import { verifyEmailHandler } from "../controllers/auth/verify-email.controller";
+import { loginController } from "../controllers/auth/login.controller";
+import { logoutController } from "../controllers/auth/logout.controller";
+import { registerController } from "../controllers/auth/register.controller";
+import { resendVerificationController } from "../controllers/auth/resend-verification.controller";
+import { verifyEmailController } from "../controllers/auth/verify-email.controller";
 
 const authRouter: Router = express.Router();
 
-authRouter.post("/register", registerHandler);
-authRouter.get("/verify-email", verifyEmailHandler);
-authRouter.post("/resend-verification", resendVerificationHandler);
-authRouter.post("/login", loginHandler);
+authRouter.post("/register", registerController);
+authRouter.get("/verify-email", verifyEmailController);
+authRouter.post("/resend-verification", resendVerificationController);
+authRouter.post("/login", loginController);
+authRouter.post("/logout", logoutController);
 
 export { authRouter };

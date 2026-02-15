@@ -8,7 +8,7 @@ dotenv.config();
 
 const authService = new AuthService();
 
-export const loginHandler: RequestHandler = async (req, res) => {
+export const loginController: RequestHandler = async (req, res) => {
 	const data = loginUserSchema.parse(req.body);
 	const user = await authService.getUserByEmail(data.email);
 
