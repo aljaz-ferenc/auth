@@ -5,7 +5,7 @@ import { logoutController } from "../controllers/auth/logout.controller";
 import { registerController } from "../controllers/auth/register.controller";
 import { resendVerificationController } from "../controllers/auth/resend-verification.controller";
 import { verifyEmailController } from "../controllers/auth/verify-email.controller";
-import { requireAuth } from "../middleware/requireAuth.middleware";
+import { requireAuth } from "../middleware/require-auth.middleware";
 
 const authRouter: Router = express.Router();
 

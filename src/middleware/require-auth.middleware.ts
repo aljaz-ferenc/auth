@@ -22,14 +22,19 @@ export const requireAuth: RequestHandler = (req, res, next) => {
 		return sendError(res, ["Not logged in"], 401);
 	}
 
-	const verifiedToken = jwtPayloadSchema.parse(
-		jwt.verify(accessToken, env.JWT_SECRET),
-	);
+	let user;
 
-	req.user = {
-		id: verifiedToken.userId,
-		email: verifiedToken.email,
-	};
+	try {
+		const verifiedToken = jwtPayloadSchema.parse(
+			jwt.verify(accessToken, env.JWT_SECRET),
+		);
+
+		user = { email: verifiedToken.email, id: verifiedToken.userId };
+	} catch (err) {
+		return sendError(res, ["Not logged in"], 401);
+	}
+
+	req.user = user;
 
 	next();
 };
