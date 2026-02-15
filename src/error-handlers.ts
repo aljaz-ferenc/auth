@@ -1,4 +1,5 @@
 import { ErrorRequestHandler } from "express";
+import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import z, { ZodError } from "zod";
 import {
 	PrismaClientKnownRequestError,
@@ -63,6 +64,10 @@ export const errorRequestHandler: ErrorRequestHandler = (
 			.map((err) => err)
 			.flat();
 		return sendError(res, errorStrings as string[], 400);
+	}
+
+	if (err instanceof TokenExpiredError || err instanceof JsonWebTokenError) {
+		return sendError(res, ["Not authenticated"], 401);
 	}
 
 	if (err instanceof Error) {

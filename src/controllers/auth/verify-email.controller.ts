@@ -18,7 +18,7 @@ export const verifyEmailController: RequestHandler = async (req, res) => {
 		return sendError(res, ["Expired verification link"], 400);
 	}
 
-	const user = await authService.getUserById(tokenDB.userId);
+	const user = await authService.getUserById(tokenDB.userId, false);
 
 	if (!user) {
 		return sendError(res, ["User not found"], 404);

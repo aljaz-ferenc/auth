@@ -48,8 +48,11 @@ export class AuthService {
 		return prisma.emailToken.delete({ where: { id: emailTokenId } });
 	}
 
-	async getUserById(userId: User["id"]) {
-		return prisma.user.findUnique({ where: { id: userId } });
+	async getUserById(userId: User["id"], includePassword: boolean) {
+		return prisma.user.findUnique({
+			where: { id: userId },
+			omit: { password: !includePassword },
+		});
 	}
 
 	async getUserByEmail(email: User["email"]) {
