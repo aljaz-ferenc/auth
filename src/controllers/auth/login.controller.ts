@@ -1,23 +1,19 @@
-import bcrypt from "bcrypt";
-import crypto from "crypto";
-import { addDays } from "date-fns";
 import dotenv from "dotenv";
 import { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
 import { sendError } from "../../app";
-import { prisma } from "../../lib/prisma";
 import { loginUserSchema } from "../../lib/types";
+import { AuthService } from "../../services/auth.service";
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 if (!JWT_SECRET) throw new Error("Missing JWT_SECRET in .env");
 
-export const loginHandler: RequestHandler = async (req, res) => {
-	const { email, password } = req.body;
-	const validated = loginUserSchema.parse({ email, password });
+const authService = new AuthService();
 
-	const user = await prisma.user.findUnique({ where: { email } });
+export const loginHandler: RequestHandler = async (req, res) => {
+	const data = loginUserSchema.parse(req.body);
+	const user = await authService.getUserByEmail(data.email);
 
 	if (!user) {
 		return sendError(res, ["Invalid email or password"], 401);
@@ -28,41 +24,26 @@ export const loginHandler: RequestHandler = async (req, res) => {
 	}
 
 	if (!user.password) {
-		return sendError(
-			res,
-			["This account uses social login. Please log in with Google."],
-			400,
-		);
+		return sendError(res, ["This account uses social login."], 400);
 	}
 
-	const match = await bcrypt.compare(validated.password, user.password);
-
-	if (!match) {
+	const isPasswordValid = await authService.isPasswordValid(
+		data.password,
+		user.password,
+	);
+	if (!isPasswordValid) {
 		return sendError(res, ["Invalid email or password"], 403);
 	}
 
-	const accessToken = jwt.sign(
-		{ userId: user.id, email: user.email },
-		JWT_SECRET,
-		{ expiresIn: "15m" },
+	const accessToken = authService.generateAccessToken(user.id, user.email);
+	const refreshToken = await authService.createRefreshToken(
+		user.id,
+		authService.generateRefreshToken(),
 	);
 
-	const refreshToken = crypto.randomBytes(40).toString("hex");
+	authService.updateLastLogin(user.id);
 
-	await prisma.refreshToken.create({
-		data: {
-			token: refreshToken,
-			userId: user.id,
-			expiresAt: addDays(new Date(), 30),
-		},
-	});
-
-	await prisma.user.update({
-		where: { email },
-		data: { lastLogin: new Date() },
-	});
-
-	res.cookie("refreshToken", refreshToken, {
+	res.cookie("refreshToken", refreshToken.token, {
 		httpOnly: true,
 		secure: true,
 		sameSite: "strict",

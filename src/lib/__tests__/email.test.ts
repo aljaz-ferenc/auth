@@ -1,12 +1,14 @@
 import request from "supertest";
 import app from "../../app";
-import { sendVerificationEmail } from "../email";
+import { EmailService } from "../../services/email.service";
 import { prisma } from "../prisma";
 import { RegisterUserInput } from "../types";
 
-jest.mock("../email", () => ({
-	sendVerificationEmail: jest.fn().mockResolvedValue(undefined),
-}));
+EmailService.prototype.sendVerificationEmail = jest
+	.fn()
+	.mockResolvedValue(undefined);
+const sendVerificationEmail = EmailService.prototype
+	.sendVerificationEmail as jest.Mock;
 
 const testEmail = "32raedfa2e@faw3rqeawrdsfszdf.com";
 

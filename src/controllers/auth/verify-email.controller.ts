@@ -1,57 +1,35 @@
 import { RequestHandler } from "express";
 import { sendError } from "../../app";
-import { prisma } from "../../lib/prisma";
+import { verifyEmailBodySchema } from "../../lib/types";
+import { AuthService } from "../../services/auth.service";
+
+const authService = new AuthService();
 
 export const verifyEmailHandler: RequestHandler = async (req, res) => {
-	const { token } = req.query;
-
-	if (!token) {
-		return sendError(res, ["Verification token missing"], 400);
-	}
-	const tokenDB = await prisma.emailToken.findFirst({
-		where: {
-			token: token.toString(),
-		},
-	});
+	const { token } = verifyEmailBodySchema.parse(req.query);
+	const tokenDB = await authService.getEmailToken(token.toString());
 
 	if (!tokenDB) {
 		return sendError(res, ["Invalid verification link"], 404);
 	}
 
-	const isExpired = new Date() > tokenDB.expiresAt;
-
-	if (isExpired) {
-		await prisma.emailToken.delete({
-			where: { id: tokenDB.id },
-		});
+	if (authService.isEmailTokenExpired(tokenDB)) {
+		await authService.deleteEmailToken(tokenDB.id);
 		return sendError(res, ["Expired verification link"], 400);
 	}
 
-	const user = await prisma.user.findUnique({
-		where: { id: tokenDB.userId },
-	});
+	const user = await authService.getUserById(tokenDB.userId);
 
 	if (!user) {
 		return sendError(res, ["User not found"], 404);
 	}
 
 	if (user.isVerified) {
-		await prisma.emailToken.delete({
-			where: { id: tokenDB.id },
-		});
-
+		await authService.deleteEmailToken(tokenDB.id);
 		return res.status(200).json({ message: "Email already verified" });
 	}
 
-	await prisma.user.update({
-		where: { id: tokenDB.userId },
-		data: {
-			isVerified: true,
-			emailTokens: {
-				delete: { id: tokenDB.id },
-			},
-		},
-	});
+	await authService.verifyUser(tokenDB.userId, tokenDB.id);
 
 	return res.status(200).json({
 		message: "Email verified successfully",

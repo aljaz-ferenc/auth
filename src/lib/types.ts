@@ -20,5 +20,9 @@ export const loginUserSchema = z.object({
 	email: z.email(),
 });
 
+export const verifyEmailBodySchema = z.object({
+	token: z.string().min(1, { error: "Missing email token" }),
+});
+
 export type RegisterUserInput = z.infer<typeof registerUserSchema>;
 export type LoginUserInput = z.infer<typeof loginUserSchema>;
