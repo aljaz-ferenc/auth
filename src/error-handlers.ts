@@ -62,7 +62,7 @@ export const errorRequestHandler: ErrorRequestHandler = (
 		const errorStrings = Object.values(z.flattenError(err).fieldErrors)
 			.map((err) => err)
 			.flat();
-		return sendError(res, errorStrings as string[], 409);
+		return sendError(res, errorStrings as string[], 400);
 	}
 
 	if (err instanceof Error) {

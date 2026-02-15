@@ -32,7 +32,7 @@ model User {
 model RefreshToken {
   id        String   @id @default(cuid())
   token     String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String   @map("user_id")
   expiresAt DateTime @map("expires_at")
   createdAt DateTime @default(now())
@@ -43,7 +43,7 @@ model RefreshToken {
 model EmailToken {
   id        String   @id @default(cuid())
   token     String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String   @map("user_id")
   type      String // "verification" or "reset_password"
   expiresAt DateTime @map("expires_at")

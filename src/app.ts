@@ -10,7 +10,7 @@ if (!ORIGIN) {
 	throw new Error("Missing ORIGIN in .env");
 }
 
-const app: Express = express();
+export const app: Express = express();
 app.use(helmet());
 app.use(express.json());
 app.use(

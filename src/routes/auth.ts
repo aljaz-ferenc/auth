@@ -41,7 +41,7 @@ authRouter.post("/register", async (req, res) => {
 
 	await sendVerificationEmail(user.email, token.token);
 
-	res.json({
+	res.status(201).json({
 		message:
 			"Registration successful! Please check your email to verify your account.",
 		user: { email: validated.email },

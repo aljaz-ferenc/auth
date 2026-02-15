@@ -33,6 +33,11 @@ if (!BASE_URL) {
 emailjs.init({ publicKey: "mfRAgHp5HiRnef3D4" });
 
 export async function sendVerificationEmail(email: string, token: string) {
+	if (process.env.NODE_ENV === "test") {
+		console.log("Mock sendVerificationEmail running...");
+		return;
+	}
+
 	try {
 		await emailjs
 			.send(
