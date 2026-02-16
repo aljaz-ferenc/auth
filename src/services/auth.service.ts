@@ -115,6 +115,7 @@ export class AuthService {
 		userId: User["id"],
 		token: EmailToken["token"],
 		type: EmailToken["type"],
+		expiresIn: number = 24,
 	) {
 		return prisma.$transaction(async (tx) => {
 			await tx.emailToken.deleteMany({
@@ -126,7 +127,7 @@ export class AuthService {
 					token,
 					type,
 					userId,
-					expiresAt: addHours(new Date(), 24),
+					expiresAt: addHours(new Date(), expiresIn),
 				},
 			});
 		});

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Email-safe styles - works in most clients */
+    .email-container {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      color: #1a1a1a;
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid #eaeaea;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 40px 30px;
+      text-align: center;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .header h1 {
+      margin: 0;
+      color: white;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    
+    .content {
+      padding: 40px 30px;
+      background: #ffffff;
+    }
+    
+    .greeting {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    
+    .message {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .button {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white !important;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
+    }
+    
+    .button:hover {
+      background: linear-gradient(135deg, #5a6fd6 0%, #6a4392 100%);
+    }
+    
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+      margin: 30px 0;
+    }
+    
+    .fallback {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .fallback p {
+      margin: 0 0 10px 0;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .fallback-link {
+      color: #667eea;
+      word-break: break-all;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    
+    .fallback-link:hover {
+      text-decoration: underline;
+    }
+    
+    .footer {
+      padding: 30px;
+      background: #f5f5f5;
+      text-align: center;
+      border-radius: 0 0 12px 12px;
+    }
+    
+    .footer p {
+      margin: 0;
+      color: #999;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    
+    .security-note {
+      color: #999;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 20px; background: #f0f0f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <div class="email-container">
+    <!-- Header with gradient -->
+    <div class="header">
+      <h1>Welcome to Our App! 🎉</h1>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="content">
+      <div class="greeting">
+        <strong>Hi there,</strong>
+      </div>
+      
+      <div class="message">
+        Thanks for signing up! We're really excited to have you on board. 
+        Before you get started, we just need to verify your email address.
+      </div>
+      
+      <!-- Button -->
+      <div style="text-align: center;">
+        <a href="<%= link %>" class="button">
+          ✨ Verify Email Address
+        </a>
+      </div>
+      
+      <div class="divider"></div>
+      
+      <!-- Fallback link section -->
+      <div class="fallback">
+        <p><strong>Button not working?</strong> Copy and paste this link into your browser:</p>
+        <a href="<%= link %>" class="fallback-link"><%= link %></a>
+      </div>
+      
+      <!-- Quick tips -->
+      <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin-top: 20px;">
+        <p style="margin: 0; color: #f39c12; font-size: 14px;">
+          ⏰ This verification link will expire in 24 hours for your security.
+        </p>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      <p>
+        <strong>Didn't sign up for an account?</strong><br>
+        If you didn't create an account with us, you can safely ignore this email.
+        No changes have been made to your account.
+      </p>
+      <p class="security-note">
+        This email was sent to verify your account ownership.<br>
+        &copy; 2026 Your App Name. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

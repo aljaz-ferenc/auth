@@ -1,5 +1,7 @@
+import path from "node:path";
 import emailjs from "@emailjs/nodejs";
 import dotenv from "dotenv";
+import ejs from "ejs";
 import { EmailToken } from "../../prisma/generated/prisma";
 import { env } from "../config/env";
 
@@ -35,7 +37,7 @@ export class EmailService {
 			console.log("Mock sendVerificationEmail running...");
 			return;
 		}
-		const html = this.generateEmailContent(
+		const html = await this.generateEmailContent(
 			"VERIFICATION",
 			`${env.BASE_URL}/api/auth/verify-email?token=${token}`,
 		);
@@ -52,7 +54,7 @@ export class EmailService {
 			console.log("Mock sendPasswordResetEmail running...");
 			return;
 		}
-		const html = this.generateEmailContent(
+		const html = await this.generateEmailContent(
 			"RESET_PASSWORD",
 			`${env.BASE_URL}/api/auth/reset-password?token=${token}`,
 		);
@@ -66,18 +68,22 @@ export class EmailService {
 	}
 
 	private generateEmailContent(type: EmailToken["type"], link: string) {
-		const content = {
-			title:
-				type === "VERIFICATION" ? "Verify Your Email" : "Reset Your Password",
-			text: `Click the link below to ${type === "VERIFICATION" ? "verify your email" : "reset your password"}`,
-			buttonText: type === "VERIFICATION" ? "Verify Email" : "Reset Password",
-		};
-		return `
-			<div>
-				<h2>${content.title}</h2>
-				<p>${content.text}</p>
-				<a href="${link}" target="_blank">${content.buttonText}</a>
-			</div>
-		`;
+		const passwordResetTemplate = path.join(
+			__dirname,
+			"../lib/templates",
+			"pasword-reset-email.ejs",
+		);
+		const emailVerificationTemplate = path.join(
+			__dirname,
+			"../lib/templates",
+			"email-verification-email.ejs",
+		);
+
+		const template =
+			type === "VERIFICATION"
+				? emailVerificationTemplate
+				: passwordResetTemplate;
+
+		return ejs.renderFile(template, { link });
 	}
 }
