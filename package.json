@@ -37,6 +37,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.15",
+		"@jest/globals": "^30.2.0",
 		"@types/bcrypt": "^6.0.0",
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.6",

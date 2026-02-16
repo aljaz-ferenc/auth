@@ -41,8 +41,13 @@ jobs:
             - name: Install dependencies
               run: pnpm install
 
+            - name: Generate Prisma client
+              run: pnpm prisma generate
+              env:
+                DATABASE_URL: postgresql://testuser:testpass@localhost:5432/testdb
+
             - name: Run database migrations
-              run: npx prisma migrate deploy
+              run: pnpm prisma migrate deploy
               env: 
                 DATABASE_URL: postgresql://testuser:testpass@localhost:5432/testdb
 
@@ -60,7 +65,7 @@ jobs:
                 EMAILJS_SERVICE_ID: fake
                 EMAILJS_TEMPLATE_ID: fake
                 EMAILJS_PRIVATE_KEY: fake
-                ARCJET_KEY: ${{ secrets.ARCJET_KEY || '' }}
+                ARCJET_KEY: fake
                 PORT: 4000
               continue-on-error: false
 
