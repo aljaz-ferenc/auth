@@ -17,6 +17,8 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.28.2",
 	"dependencies": {
+		"@arcjet/inspect": "^1.1.0",
+		"@arcjet/node": "^1.1.0",
 		"@emailjs/nodejs": "^5.0.2",
 		"@prisma/adapter-pg": "^7.4.0",
 		"@prisma/client": "^7.4.0",

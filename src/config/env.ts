@@ -14,6 +14,8 @@ const envSchema = z.object({
 	ORIGIN: z.string().min(1),
 	JWT_SECRET: z.string().min(1),
 	PORT: z.coerce.number().optional(),
+	ARCJET_KEY: z.string().min(1),
+	ARCJET_LOG_LEVEL: z.enum(["debug", "error", "info", "warn"]),
 });
 
 export function validateEnv() {

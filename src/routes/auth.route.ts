@@ -5,15 +5,20 @@ import { logoutController } from "../controllers/auth/logout.controller";
 import { registerController } from "../controllers/auth/register.controller";
 import { resendVerificationController } from "../controllers/auth/resend-verification.controller";
 import { verifyEmailController } from "../controllers/auth/verify-email.controller";
+import { arcjet } from "../middleware/arcjet.middleware";
 import { requireAuth } from "../middleware/require-auth.middleware";
 
 const authRouter: Router = express.Router();
 
-authRouter.post("/register", registerController);
-authRouter.get("/verify-email", verifyEmailController);
-authRouter.post("/resend-verification", resendVerificationController);
-authRouter.post("/login", loginController);
-authRouter.post("/logout", logoutController);
-authRouter.post("/me", requireAuth, getUserController);
+authRouter.post("/register", arcjet("auth"), registerController);
+authRouter.get("/verify-email", arcjet("public"), verifyEmailController);
+authRouter.post(
+	"/resend-verification",
+	arcjet("verify"),
+	resendVerificationController,
+);
+authRouter.post("/login", arcjet("auth"), loginController);
+authRouter.post("/logout", arcjet("public"), logoutController);
+authRouter.post("/me", arcjet("public"), requireAuth, getUserController);
 
 export { authRouter };
