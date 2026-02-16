@@ -20,7 +20,7 @@ jobs:
                     --health-cmd pg_isready
                     --health-interval 10s
                     --health-timeout 5s
-                    --lealth-retries 5
+                    --health-retries 5
                 ports:
                     - 5432:5432
         
@@ -62,3 +62,11 @@ jobs:
                 EMAILJS_PRIVATE_KEY: fake
                 ARCJET_KEY: ${{ secrets.ARCJET_KEY || '' }}
                 PORT: 4000
+              continue-on-error: false
+
+            - name: Upload test results
+              if: always()
+              uses: actions/upload-artifact@v3
+              with: 
+                name: test-results
+                path: test-results.xml  
