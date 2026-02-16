@@ -1,11 +1,12 @@
 import { RequestHandler } from "express";
 import z from "zod";
 import { sendError } from "../../app";
-import { sendVerificationEmail } from "../../lib/email";
 import { generateToken } from "../../lib/utils";
 import { AuthService } from "../../services/auth.service";
+import { EmailService } from "../../services/email.service";
 
 const authService = new AuthService();
+const emailService = new EmailService();
 
 export const resendVerificationController: RequestHandler = async (
 	req,
@@ -32,7 +33,7 @@ export const resendVerificationController: RequestHandler = async (
 
 	const newToken = generateToken();
 	await authService.createEmailToken(user.id, newToken, "VERIFICATION");
-	sendVerificationEmail(user.email, newToken);
+	emailService.sendVerificationEmail(user.email, newToken);
 
 	res.status(200).json({ message: "Verification email sent" });
 };

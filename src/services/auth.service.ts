@@ -48,10 +48,15 @@ export class AuthService {
 		return prisma.emailToken.delete({ where: { id: emailTokenId } });
 	}
 
-	async getUserById(userId: User["id"], includePassword: boolean) {
+	async getUserById(
+		userId: User["id"],
+		includePassword: boolean,
+		includeEmailTokens: boolean = false,
+	) {
 		return prisma.user.findUnique({
 			where: { id: userId },
 			omit: { password: !includePassword },
+			include: { emailTokens: includeEmailTokens },
 		});
 	}
 
@@ -79,6 +84,10 @@ export class AuthService {
 
 	generateRefreshToken() {
 		return crypto.randomBytes(40).toString("hex");
+	}
+
+	generateResetToken() {
+		return crypto.randomBytes(32).toString("hex");
 	}
 
 	async createRefreshToken(userId: User["id"], refreshToken: string) {
@@ -112,7 +121,7 @@ export class AuthService {
 				where: { userId },
 			});
 
-			await tx.emailToken.create({
+			return await tx.emailToken.create({
 				data: {
 					token,
 					type,
@@ -121,5 +130,21 @@ export class AuthService {
 				},
 			});
 		});
+	}
+
+	async updatePassword(userId: User["id"], newPassword: string) {
+		const hash = await hashPassword(newPassword);
+		await prisma.user.update({
+			where: { id: userId },
+			data: { password: hash },
+		});
+	}
+
+	async logout(token: RefreshToken["token"]) {
+		await prisma.refreshToken.delete({ where: { token } });
+	}
+
+	async logoutAll(userId: User["id"]) {
+		await prisma.refreshToken.deleteMany({ where: { userId } });
 	}
 }

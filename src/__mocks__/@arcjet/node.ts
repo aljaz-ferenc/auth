@@ -1,4 +1,3 @@
-// src/__mocks__/@arcjet/node.ts
 export default jest.fn(() => ({
 	protect: jest.fn().mockResolvedValue({ isDenied: () => false }),
 }));
