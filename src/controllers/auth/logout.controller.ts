@@ -10,12 +10,7 @@ export const logoutController: RequestHandler = async (req, res) => {
 		authService.deleteRefreshToken(refreshToken).catch(console.error);
 	}
 
-	res.clearCookie("refreshToken", {
-		httpOnly: true,
-		secure: process.env.NODE_ENV === "production",
-		sameSite: "strict",
-		path: "/",
-	});
+	res.clearCookie("refreshToken");
 
 	return res.status(200).json({ message: "Logged out successfully" });
 };

@@ -8,7 +8,7 @@ export const aj = {
 		rules: [
 			shield({ mode: "LIVE" }),
 			tokenBucket({
-				mode: "LIVE",
+				mode: process.env.NODE_ENV === "development" ? "DRY_RUN" : "LIVE",
 				refillRate: 3,
 				interval: 60,
 				capacity: 5,
@@ -22,7 +22,7 @@ export const aj = {
 		rules: [
 			shield({ mode: "LIVE" }),
 			detectBot({
-				mode: "LIVE",
+				mode: process.env.NODE_ENV === "development" ? "DRY_RUN" : "LIVE",
 				allow: [
 					"CATEGORY:SEARCH_ENGINE",
 					"CATEGORY:MONITOR",
@@ -30,7 +30,7 @@ export const aj = {
 				],
 			}),
 			tokenBucket({
-				mode: "LIVE",
+				mode: process.env.NODE_ENV === "development" ? "DRY_RUN" : "LIVE",
 				refillRate: 20,
 				interval: 60,
 				capacity: 30,

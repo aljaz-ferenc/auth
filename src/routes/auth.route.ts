@@ -3,6 +3,7 @@ import { forgotPasswordController } from "../controllers/auth/forgot-password.co
 import { getUserController } from "../controllers/auth/get-user.controller";
 import { loginController } from "../controllers/auth/login.controller";
 import { logoutController } from "../controllers/auth/logout.controller";
+import { refreshController } from "../controllers/auth/refresh.controller";
 import { registerController } from "../controllers/auth/register.controller";
 import { resendVerificationController } from "../controllers/auth/resend-verification.controller";
 import { resetPasswordController } from "../controllers/auth/reset-password.controller";
@@ -24,5 +25,6 @@ authRouter.post("/logout", arcjet("public"), logoutController);
 authRouter.post("/me", arcjet("public"), requireAuth, getUserController);
 authRouter.post("/forgot-password", arcjet("auth"), forgotPasswordController);
 authRouter.get("/reset-password", arcjet("auth"), resetPasswordController);
+authRouter.get("/refresh", refreshController);
 
 export { authRouter };

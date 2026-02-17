@@ -42,8 +42,8 @@ export const loginController: RequestHandler = async (req, res) => {
 
 	res.cookie("refreshToken", refreshToken.token, {
 		httpOnly: true,
-		secure: true,
-		sameSite: "strict",
+		secure: process.env.NODE_ENV === "production",
+		sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
 		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 	});
 
