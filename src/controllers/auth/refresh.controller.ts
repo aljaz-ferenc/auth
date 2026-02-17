@@ -7,7 +7,6 @@ const authService = new AuthService();
 
 export const refreshController: RequestHandler = async (req, res) => {
 	const oldToken = req.cookies?.refreshToken;
-	console.log("OLD_TOKEN: ", req.cookies);
 
 	if (!oldToken) {
 		return sendError(res, ["Missing refresh token"], 401);
