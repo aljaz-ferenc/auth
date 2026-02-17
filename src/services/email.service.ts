@@ -71,7 +71,7 @@ export class EmailService {
 		const passwordResetTemplate = path.join(
 			__dirname,
 			"../lib/templates",
-			"pasword-reset-email.ejs",
+			"password-reset-email.ejs",
 		);
 		const emailVerificationTemplate = path.join(
 			__dirname,

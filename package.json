@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development nodemon",
 		"start": "cross-env NODE_ENV=production node dist/index.js",
-		"build": "pnpm prisma generate && tsc",
+		"build": "pnpm prisma generate && tsc && cp -r src/lib/templates dist/lib/templates",
 		"prebuild": "rimraf dist",
 		"prepare": "husky",
 		"check": "pnpm exec biome check --write --error-on-warnings",
