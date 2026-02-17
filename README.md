@@ -85,5 +85,12 @@ A microservice that handles the complete authentication flow.
 3. `POST /reset-password` with token + new password
 4. Password updated + all sessions invalidated
 
+### Refresh Token
+1. `POST /refresh` → Receives refreshToken from HTTP-only cookie
+2. Validates refreshToken exists in database and is not expired
+3. Deletes old refreshToken from database (one-time use security)
+4. Creates new refreshToken (rotation) and stores in database → stores in HTTP-only cookie
+5. Generates new accessToken (15 min expiry) → returns in response
+
 ### Logout
 1. `POST /logout` → Clear access token from cookies, clear refresh token from DB 
