@@ -12,7 +12,9 @@ export const resendVerificationController: RequestHandler = async (
 	req,
 	res,
 ) => {
-	const validated = z.email().safeParse(req.body.email);
+	const validated = z
+		.email({ error: "Invalid email format" })
+		.safeParse(req.body.email);
 
 	if (!validated.success) {
 		return sendError(res, ["Invalid email format"], 400);
@@ -20,11 +22,7 @@ export const resendVerificationController: RequestHandler = async (
 
 	const user = await authService.getUserByEmail(validated.data);
 	if (!user) {
-		return sendError(
-			res,
-			["If an account exists, a verification email has been sent"],
-			200,
-		);
+		return res.status(200).json({ message: "Verification email sent" });
 	}
 
 	if (user.isVerified) {

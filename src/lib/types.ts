@@ -1,15 +1,18 @@
 import { z } from "zod";
 
 const passwordSchema = z
-	.string({ error: "Password is required" })
+	.string({ error: "Password must be a string" })
+	.min(1, { error: "Password is required" })
 	.min(6, { message: "Password must be at least 6 characters" })
 	.max(72);
 
+const emailSchema = z.email({
+	error: (issue) =>
+		issue.input === undefined ? "Email is required" : "Invalid email address",
+});
+
 export const registerUserSchema = z.object({
-	email: z.email({
-		error: (issue) =>
-			issue.input === undefined ? "Email is required" : "Invalid email address",
-	}),
+	email: emailSchema,
 	password: passwordSchema,
 	username: z.string().optional(),
 	name: z.string().optional(),
@@ -17,7 +20,7 @@ export const registerUserSchema = z.object({
 
 export const loginUserSchema = z.object({
 	password: passwordSchema,
-	email: z.email(),
+	email: z.email({ error: "Invalid email address" }),
 });
 
 export const verifyEmailBodySchema = z.object({

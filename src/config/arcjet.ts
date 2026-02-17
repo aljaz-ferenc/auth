@@ -30,7 +30,7 @@ export const aj = {
 				],
 			}),
 			tokenBucket({
-				mode: process.env.NODE_ENV === "development" ? "DRY_RUN" : "LIVE",
+				mode: "LIVE",
 				refillRate: 20,
 				interval: 60,
 				capacity: 30,
@@ -43,7 +43,10 @@ export const aj = {
 		key: env.ARCJET_KEY,
 		rules: [
 			shield({ mode: "LIVE" }),
-			detectBot({ mode: "LIVE", allow: [] }),
+			detectBot({
+				mode: process.env.NODE_ENV === "development" ? "DRY_RUN" : "LIVE",
+				allow: [],
+			}),
 			tokenBucket({
 				mode: "LIVE",
 				refillRate: 5,
