@@ -1,7 +1,14 @@
+import path from "node:path";
 import dotenv from "dotenv";
 import z from "zod";
 
-dotenv.config();
+dotenv.config({
+	path: path.resolve(
+		process.cwd(),
+		process.env.NODE_ENV === "test" ? ".env.test" : ".env",
+	),
+	override: true,
+});
 
 const envSchema = z.object({
 	DATABASE_URL: z.string().min(1),

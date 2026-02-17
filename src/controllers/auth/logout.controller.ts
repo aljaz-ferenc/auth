@@ -4,7 +4,6 @@ import { AuthService } from "../../services/auth.service";
 const authService = new AuthService();
 
 export const logoutController: RequestHandler = async (req, res) => {
-	console.log(req.cookies);
 	const refreshToken = req.cookies?.refreshToken;
 
 	if (refreshToken) {
