@@ -24,7 +24,7 @@ authRouter.post("/login", arcjet("auth"), loginController);
 authRouter.post("/logout", arcjet("public"), logoutController);
 authRouter.post("/me", arcjet("public"), requireAuth, getUserController);
 authRouter.post("/forgot-password", arcjet("auth"), forgotPasswordController);
-authRouter.get("/reset-password", arcjet("auth"), resetPasswordController);
+authRouter.post("/reset-password", arcjet("auth"), resetPasswordController);
 authRouter.post("/refresh", refreshController);
 
 export { authRouter };

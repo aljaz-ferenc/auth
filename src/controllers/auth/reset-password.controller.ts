@@ -6,8 +6,12 @@ import { hashPassword } from "../../lib/utils";
 import { AuthService } from "../../services/auth.service";
 
 const resetPasswordBodySchema = z.object({
-	token: z.string().min(1, { error: "Reset token is required" }),
-	password: z.string().min(1, { error: "Password is required" }),
+	token: z
+		.string({ error: "Invalid token" })
+		.min(1, { error: "Reset token is required" }),
+	password: z
+		.string({ error: "Invalid password" })
+		.min(1, { error: "Password is required" }),
 });
 
 const authService = new AuthService();
