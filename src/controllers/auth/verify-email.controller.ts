@@ -10,12 +10,12 @@ export const verifyEmailController: RequestHandler = async (req, res) => {
 	const tokenDB = await authService.getEmailToken(token.toString());
 
 	if (!tokenDB) {
-		return sendError(res, ["Invalid verification link"], 404);
+		return sendError(res, ["Token invalid"], 404);
 	}
 
 	if (authService.isEmailTokenExpired(tokenDB)) {
 		await authService.deleteEmailToken(tokenDB.id);
-		return sendError(res, ["Expired verification link"], 400);
+		return sendError(res, ["Token expired"], 400);
 	}
 
 	const user = await authService.getUserById(tokenDB.userId, false);

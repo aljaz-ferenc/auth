@@ -24,7 +24,9 @@ export const loginUserSchema = z.object({
 });
 
 export const verifyEmailBodySchema = z.object({
-	token: z.string().min(1, { error: "Missing email token" }),
+	token: z
+		.string({ error: "Token invalid" })
+		.min(1, { error: "Missing token" }),
 });
 
 export const jwtPayloadSchema = z.object({

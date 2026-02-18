@@ -28,6 +28,6 @@ export const forgotPasswordController: RequestHandler = async (req, res) => {
 	emailService.sendPasswordResetEmail(user.email, emailToken.token);
 
 	return res.status(200).json({
-		message: "If the user exists, a reset link will be sent to their email",
+		message: "Reset email sent",
 	});
 };
